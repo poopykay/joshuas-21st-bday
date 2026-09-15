@@ -44,10 +44,11 @@ and the candles can be blown out by tapping them.
 | Message slides | tapping the ladybug |
 | 86 (photo strip) | tapping the letter in Snoopy's hands |
 | 87 (the letter) | tapping the ladybug |
-| 88 | blow into the mic to put the candles out |
+| 88 | blow into the mic to put the candles out — then tap the **right third** to loop back to slide 1 |
 
-Tap anywhere in the **left third** of the screen to go back a slide.
-Arrow keys work too.
+Tap anywhere in the **left third** of the screen to go back a slide. From slide 1
+that wraps round to the cake, so it loops both ways. Arrow keys work too.
+The candles relight each time you arrive back at the cake.
 
 The photo strip on slide 86 scrolls — drag it, scroll on it, or swipe it on a phone.
 It gives a small nudge when the slide opens so it's clear it moves.

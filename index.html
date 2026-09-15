@@ -255,6 +255,15 @@
     return candles;
   }
 
+  function relight() {
+    if (!candles) return;
+    var fl = candles.querySelectorAll('.flame');
+    for (var i = 0; i < fl.length; i++) fl[i].classList.remove('out');
+    blown = false;
+    note.className = '';
+    caketap.className = 'zone';
+  }
+
   function blowOut() {
     if (blown || !candles) return;
     blown = true;
@@ -360,7 +369,9 @@
   var cur = 0;
 
   function go(n) {
-    if (n < 1 || n > N || n === cur) return;
+    if (n > N) n = 1;                      // the last slide loops round to the first
+    if (n < 1) n = N;                      // and going back from the first returns to it
+    if (n === cur) return;
     var prev = cur;
     cur = n;
 
@@ -377,7 +388,8 @@
     if (n === 88) {
       stage.insertBefore(buildCandles(), zoneBox);
       stage.appendChild(caketap);
-      if (!blown) listenForBlowing(); else caketap.className = 'zone';
+      relight();                           // arrive at the cake and the candles are lit again
+      listenForBlowing();
     } else {
       if (candles && candles.parentNode) candles.parentNode.removeChild(candles);
       if (caketap && caketap.parentNode) caketap.parentNode.removeChild(caketap);
@@ -387,6 +399,8 @@
 
     // keep a few neighbours warm
     preload(n + 1); preload(n + 2); preload(n - 1);
+    if (n === N) preload(1);
+    if (n === 1) preload(N);
 
     try { history.replaceState(null, '', '#' + n); } catch (e) {}
   }
@@ -399,11 +413,15 @@
   });
 
   /* --------------------------------------------------------------- startup */
+  // read the deep link before anything calls go(), which rewrites the hash
+  var wanted = parseInt((location.hash || '').slice(1), 10);
+  if (!(wanted >= 1 && wanted <= N)) wanted = 1;
+
   var first = slideEl(1);
   function start() {
     loader.className = 'gone';
     stage.className = 'ready';
-    go(1);
+    go(wanted);
     // quietly warm the rest of the deck, a few at a time
     var q = 2, inflight = 0;
     (function pump() {
@@ -420,14 +438,11 @@
   if (first.complete) start();
   else { first.addEventListener('load', start); first.addEventListener('error', start); }
 
-  // deep link, e.g. index.html#42 — handy while checking the site
-  function fromHash() {
+  // deep link, e.g. index.html#42 — also lets a refresh pick up where it left off
+  window.addEventListener('hashchange', function () {
     var h = parseInt((location.hash || '').slice(1), 10);
     if (h >= 1 && h <= N) go(h);
-  }
-  window.addEventListener('hashchange', fromHash);
-  first.addEventListener('load', fromHash);
-  if (first.complete) setTimeout(fromHash, 0);
+  });
 })();
 </script>
 </body>
